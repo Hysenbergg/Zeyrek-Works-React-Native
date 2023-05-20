@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import {View, Text, SafeAreaView, Alert} from 'react-native';
 import useFetch from '../../hooks/useFetch';
 import Button from '../../components/Button';
@@ -9,7 +9,6 @@ import Realm from 'realm';
 let realm;
 
 function DetailScreen({route}) {
-
   const {id} = route.params;
 
   // İşin detayı sayfasında id yardımı ile detaylarının listeleriz.
@@ -19,26 +18,27 @@ function DetailScreen({route}) {
 
   // Component ilk olarak çalıştığında Realm veritabanıı çağırıyoruz.
   useEffect(() => {
-    realm = new Realm({ path: 'JobDatabase.realm'});
-  }, []); 
+    realm = new Realm({path: 'JobDatabase.realm'});
+  }, []);
 
   // Realm veritabanı yardımı ile cihazın yerel hafızasına favorilere eklenmiş işi kayıt ediyoruz.
   const addedFavoriteJob = () => {
     realm.write(() => {
       var ID =
         realm.objects('Favorite_Job_Schema').sorted('job_id', true).length > 0
-          ? realm.objects('Favorite_Job_Schema').sorted('job_id', true)[0].job_id + 1
+          ? realm.objects('Favorite_Job_Schema').sorted('job_id', true)[0]
+              .job_id + 1
           : 1;
       realm.create('Favorite_Job_Schema', {
         job_id: ID,
         category: data.categories[0].name,
         company: data.company.name,
         location: data.locations[0].name,
-        level: data.levels[0].name
-      })
+        level: data.levels[0].name,
+      });
     });
     Alert.alert('Favorilere eklendi.');
-  }
+  };
 
   return (
     <SafeAreaView style={styles.conteiner}>
@@ -58,14 +58,15 @@ function DetailScreen({route}) {
           <Text style={styles.title}>Job Detail</Text>
           <View style={styles.webview_container}>
             {/* WebView ile apiden gelen html bilgilerini ekranda gösteriyoruz. */}
-            <WebView style={styles.webview} source={{html: data.contents}} />
-          </View>
-          <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}} >
-            <Button
-              buttonText="Submit"
-              iconName="login"
-              iconSize={20}
+            <WebView
+            
+              style={styles.webview}
+              scalesPageToFit={false}
+              source={{html: data.contents}}
             />
+          </View>
+          <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
+            <Button buttonText="Submit" iconName="login" iconSize={20} />
             <Button
               buttonText="Favorite Jobs"
               iconName="cards-heart"
